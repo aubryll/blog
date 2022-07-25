@@ -1,12 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import {
   Grid,
-  TextField,
-  IconButton,
-  Card,
-  CardContent,
-  Button,
   Typography,
   ListItem,
   Divider,
@@ -16,12 +11,13 @@ import {
   List,
   Stack,
   Fab,
+  TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import data from "../api.json";
-import { formatDistance, format } from "date-fns";
+import { formatDistance } from "date-fns";
 import Lodash from "lodash";
-import { Add } from "@mui/icons-material";
+import { FormDialog } from "@/components/dialog";
 
 /**
  * Prop type for this component
@@ -113,16 +109,76 @@ const renderPost = (
  * @returns
  */
 const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
-  const { handleSubmit, control } = useForm<BlogForm>({
+  const newPosts = Lodash.take(posts, 10)
+  const [dialogFormOpen, setDialogFormOpen] = useState(false);
+
+  const forms = useForm<BlogForm>({
     defaultValues: {
       username: "",
-    },
+      content: ""
+    }
   });
+  const {control} = forms
 
-  const createPost = (data: BlogForm) => {};
+  const toggleDialogForm = () => setDialogFormOpen((prev) => !prev);
+
+  const createPost = (data: BlogForm) => {
+    console.log("Data: ", JSON.stringify(data));
+    toggleDialogForm()
+  };
 
   return (
     <>
+      <FormDialog
+        open={dialogFormOpen}
+        forms={forms}
+        title={"Create a new blog post"}
+        submit={createPost}
+        onClose={toggleDialogForm}
+        scroll="paper"
+      >
+        <Controller
+          name="username"
+          control={control}
+          rules={{
+            required: "Enter your email address",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              label={"Email address"}
+              placeholder={"What is your email address?"}
+              fullWidth
+              type="email"
+              variant="standard"
+              value={value}
+              error={!!error}
+              helperText={error ? error.message : null}
+              onChange={onChange}
+            />
+          )}
+        />
+        <Controller
+          name="content"
+          control={control}
+          rules={{
+            required: "Enter your email address",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              label="Post"
+              placeholder="What is on your mind?"
+              fullWidth
+              multiline
+              value={value}
+              error={!!error}
+              helperText={error ? error.message : null}
+              minRows={5}
+              onChange={onChange}
+              variant="standard"
+            />
+          )}
+        />
+      </FormDialog>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Stack>
@@ -133,7 +189,7 @@ const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <List disablePadding>{Lodash.map(posts, renderPost)}</List>
+          <List disablePadding>{Lodash.map(newPosts, renderPost)}</List>
         </Grid>
       </Grid>
       <Fab
@@ -147,8 +203,8 @@ const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
           left: "auto",
           position: "fixed",
         }}
+        onClick={toggleDialogForm}
       >
-        <Add sx={{ mr: 1 }} />
         New Post
       </Fab>
     </>
@@ -159,7 +215,7 @@ export async function getStaticProps() {
   const posts: Post[] = data;
   return {
     props: {
-      posts,
+      posts: posts,
     },
   };
 }
