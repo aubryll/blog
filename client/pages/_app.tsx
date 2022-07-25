@@ -3,7 +3,7 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import theme from "@/components/theme";
-import { PaletteMode } from "@mui/material";
+import { CssBaseline, PaletteMode } from "@mui/material";
 import type { NextPage } from "next";
 import type { ReactNode } from "react";
 import { Layout } from "@/components/layout";
@@ -47,6 +47,7 @@ const App = ({
           <Head>
             <HeadMeta />
           </Head>
+          <CssBaseline/>
           <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
         </React.Fragment>
       </ThemeProvider>
