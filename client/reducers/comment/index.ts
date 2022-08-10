@@ -1,24 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Post } from "@/components/types";
+import type { Comment } from "@/components/types";
 
 
 type State = {
-  posts: Post[];
+  comments: Comment[];
 };
 
 const initialState: State = {
-  posts: [],
+  comments: [],
 };
 
-export const postSlice = createSlice({
-  name: "post",
+export const commentSlice = createSlice({
+  name: "comment",
   initialState,
   reducers: {
-    addPost: (state: State, action: PayloadAction<Post>) => {
-      return { ...state, posts: [...state.posts, action.payload] };
+    addPost: (state: State, action: PayloadAction<Comment>) => {
+      return { ...state, comments: [...state.comments, action.payload] };
     },
   },
 });
 
-export const { addPost } = postSlice.actions;
-export default postSlice.reducer;
+export const { addPost } = commentSlice.actions;
+export default commentSlice.reducer;
