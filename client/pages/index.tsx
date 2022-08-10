@@ -18,33 +18,14 @@ import data from "../api.json";
 import { formatDistance } from "date-fns";
 import Lodash from "lodash";
 import { FormDialog } from "@/components/dialog";
+import type { Form, Post } from "@/components/types";
+import Link from "next/link";
 
 /**
  * Prop type for this component
  */
 type BlogPostsProps = {
   posts: Post[];
-};
-
-/**
- * A format used in blog post creation form.
- * Each field in this type object should be named after a certain property.
- */
-type BlogForm = {
-  username: string;
-  content: string;
-};
-
-/**
- * A format used in blog posts data fetcher.
- * Each field in this type object should be named after a certain property.
- */
-type Post = {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-  date: string;
 };
 
 /**
@@ -71,35 +52,45 @@ const renderPost = (
   index: number
 ) => {
   return (
-    <ListItem key={index} button alignItems="flex-start">
-      <ListItemAvatar>
-        <Avatar alt={author} {...stringAvatar(author)} />
-      </ListItemAvatar>
-      <ListItemText
-        primary={<Typography variant="subtitle2">{title}</Typography>}
-        secondary={
-          <React.Fragment>
-            <Typography
-              sx={{ display: "inline" }}
-              component="span"
-              variant="body2"
-              color="text.primary"
-            >
-              {author}
-            </Typography>
-            <Typography variant="body1" component="span" color="text.secondary">
-              {` — ${content}`}
-            </Typography>
-            <br />
-            <Typography variant="body2" component="span" color="text.secondary">
-              {formatDistance(new Date(date), new Date(), {
-                addSuffix: true,
-              })}
-            </Typography>
-          </React.Fragment>
-        }
-      />
-    </ListItem>
+    <Link key={index} href={`/post/${id}`}>
+      <ListItem button alignItems="flex-start">
+        <ListItemAvatar>
+          <Avatar alt={author} {...stringAvatar(author)} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={<Typography variant="subtitle2">{title}</Typography>}
+          secondary={
+            <React.Fragment>
+              <Typography
+                sx={{ display: "inline" }}
+                component="span"
+                variant="body2"
+                color="text.primary"
+              >
+                {author}
+              </Typography>
+              <Typography
+                variant="body1"
+                component="span"
+                color="text.secondary"
+              >
+                {` — ${content}`}
+              </Typography>
+              <br />
+              <Typography
+                variant="body2"
+                component="span"
+                color="text.secondary"
+              >
+                {formatDistance(new Date(date), new Date(), {
+                  addSuffix: true,
+                })}
+              </Typography>
+            </React.Fragment>
+          }
+        />
+      </ListItem>
+    </Link>
   );
 };
 
@@ -109,22 +100,22 @@ const renderPost = (
  * @returns
  */
 const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
-  const newPosts = Lodash.take(posts, 10)
+  const newPosts = Lodash.take(posts, 10);
   const [dialogFormOpen, setDialogFormOpen] = useState(false);
 
-  const forms = useForm<BlogForm>({
+  const forms = useForm<Form>({
     defaultValues: {
       username: "",
-      content: ""
-    }
+      content: "",
+    },
   });
-  const {control} = forms
+  const { control } = forms;
 
   const toggleDialogForm = () => setDialogFormOpen((prev) => !prev);
 
-  const createPost = (data: BlogForm) => {
+  const createPost = (data: Form) => {
     console.log("Data: ", JSON.stringify(data));
-    toggleDialogForm()
+    toggleDialogForm();
   };
 
   return (
@@ -211,13 +202,13 @@ const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
   );
 };
 
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   const posts: Post[] = data;
   return {
     props: {
       posts: posts,
     },
   };
-}
+};
 
 export default BlogPosts;
