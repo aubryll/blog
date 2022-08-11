@@ -4,4 +4,4 @@ const config = {
     DB_USER: process.env.DATABASE_USER,
   };
   
-  module.exports = config;
+export default config

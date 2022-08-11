@@ -1,5 +1,5 @@
 export type Comment = {
-  id?: number;
+  id?: string;
   postId: number;
   comments?: Comment[];
   author: string;
