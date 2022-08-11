@@ -53,7 +53,8 @@ router.post("/comments/create", (req: any, res: any) => {
   const { postId } = body;
   delete body.postId;
   Blog.findById(postId)
-    .populate("comments")
+  .populate("comments")
+  .populate("comments.comments")
     .exec((err, foundBlog) => {
       if (err) {
         console.error(err);
@@ -79,7 +80,8 @@ router.put("/comments/update", (req: any, res: any) => {
   delete body.postId;
 
   Comment.findById(commentId)
-    .populate("comments")
+  .populate("comments")
+  .populate("comments.comments")
     .exec((err, foundComment) => {
       if (err) {
         console.error(err);
