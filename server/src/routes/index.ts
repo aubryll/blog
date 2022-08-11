@@ -74,7 +74,7 @@ router.post("/comments/create", (req: any, res: any) => {
     });
 });
 
-router.put("/comments/update", (req: any, res: any) => {
+router.post("/comments/comment/create", (req: any, res: any) => {
   const { body } = req;
   const { commentId, comment } = body;
   delete body.postId;
