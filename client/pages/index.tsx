@@ -218,7 +218,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
           <List disablePadding>{Lodash.map(posts, renderPost)}</List>
           <Stack direction={"row"} spacing={5} marginY={5}>
           <Button variant="outlined" onClick={() => dispatch(getPosts({page: --page}))} disabled={page === 0}>Back</Button>
-          <Button variant="contained" onClick={() => dispatch(getPosts({page: ++page}))} disabled={posts?.length === 0}>Next</Button>
+          <Button variant="contained" onClick={() => dispatch(getPosts({page: ++page}))} >Next</Button>
           </Stack>
         </Grid>
       </Grid>
@@ -244,7 +244,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
 BlogPosts.getInitialProps = wrapper.getInitialPageProps(
   ({ dispatch }) =>
     async () => {
-      await dispatch(getPosts());
+      await dispatch(getPosts({}));
     }
 );
 

@@ -4,5 +4,6 @@
     title: string;
     body: string;
     date?: string;
+    comments?: Comment[]
   };
   

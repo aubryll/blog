@@ -16,7 +16,7 @@ const initialState: PostState = {
   page: 0
 };
 
-const postReducer = createReducer(initialState, (builder) => {
+const postsReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(getPosts.pending, (state) => {
       state.pending = true;
@@ -45,4 +45,4 @@ const postReducer = createReducer(initialState, (builder) => {
     });
 });
 
-export default postReducer;
+export default postsReducer;
