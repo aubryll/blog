@@ -40,6 +40,9 @@ const Post: NextPage<PostProps> = () => {
         <Typography>{post?.body}</Typography>
       </Stack>
     </Grid>
+    <Grid item xs={12}>
+      
+    </Grid>
   </Grid>
   )
 };
