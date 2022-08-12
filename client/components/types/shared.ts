@@ -1,4 +1,5 @@
  export type Form = {
-    username: string;
-    content: string;
+    title: string;
+    author: string;
+    body: string;
   };

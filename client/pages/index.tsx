@@ -14,17 +14,15 @@ import {
   TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import data from "../api.json";
 import { formatDistance } from "date-fns";
 import Lodash from "lodash";
 import { FormDialog } from "@/components/dialog";
 import type { Form, Post } from "@/components/types";
 import Link from "next/link";
-import { get } from "@/api/index";
 import { useDispatch, useSelector } from "react-redux";
 import { wrapper } from "redux/store";
-import {loadPostsAsync} from '../redux/reducers/post/thunk'
 import { getPosts } from "redux/reducers/post/actions";
+import {post} from "../api/index"
 
 /**
  * Prop type for this component
@@ -53,11 +51,11 @@ const stringAvatar = (name: string) => {
  * @returns
  */
 const renderPost = (
-  { id, author, title, content, date }: Post,
+  { _id, author, title, body, date }: Post,
   index: number
 ) => {
   return (
-    <Link key={index} href={`/post/${id}`}>
+    <Link key={index} href={`/post/${_id}`}>
       <ListItem button alignItems="flex-start">
         <ListItemAvatar>
           <Avatar alt={author} {...stringAvatar(author)} />
@@ -78,8 +76,14 @@ const renderPost = (
                 variant="body1"
                 component="span"
                 color="text.secondary"
+                sx={{
+                  display: '-webkit-box',
+                  overflow: 'hidden',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 3,
+              }}
               >
-                {` — ${content}`}
+                {` — ${body}`}
               </Typography>
               <br />
               <Typography
@@ -87,7 +91,7 @@ const renderPost = (
                 component="span"
                 color="text.secondary"
               >
-                {formatDistance(new Date(date), new Date(), {
+                {formatDistance(new Date(date ?? Date.now()), new Date(), {
                   addSuffix: true,
                 })}
               </Typography>
@@ -105,25 +109,29 @@ const renderPost = (
  * @returns
  */
 const BlogPosts: NextPage<BlogPostsProps> = () => {
-  const dispatch = useDispatch()
-  const {posts, isLoading, error} = useSelector((state: any) => state.posts)
+  const dispatch = useDispatch();
 
-  const newPosts = Lodash.take(posts, 10);
+  const { posts, isLoading, error } = useSelector((state: any) => state.posts);
   const [dialogFormOpen, setDialogFormOpen] = useState(false);
 
+  const createBlogPost = async (data: Post) => {
+    await post('blog/create',data)
+  };
   const forms = useForm<Form>({
     defaultValues: {
-      username: "",
-      content: "",
+      title: "",
+      author: "",
+      body: "",
     },
   });
   const { control } = forms;
 
   const toggleDialogForm = () => setDialogFormOpen((prev) => !prev);
 
-  const createPost = (data: Form) => {
-    console.log("Data: ", JSON.stringify(data));
+  const createPost = async (data: Form) => {
     toggleDialogForm();
+    await createBlogPost(data);
+    dispatch(getPosts())
   };
 
   return (
@@ -137,7 +145,26 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
         scroll="paper"
       >
         <Controller
-          name="username"
+          name="title"
+          control={control}
+          rules={{
+            required: "Enter the title",
+          }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              label={"Title"}
+              placeholder={"What is title?"}
+              fullWidth
+              variant="standard"
+              value={value}
+              error={!!error}
+              helperText={error ? error.message : null}
+              onChange={onChange}
+            />
+          )}
+        />
+        <Controller
+          name="author"
           control={control}
           rules={{
             required: "Enter your email address",
@@ -157,7 +184,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
           )}
         />
         <Controller
-          name="content"
+          name="body"
           control={control}
           rules={{
             required: "Enter your email address",
@@ -188,7 +215,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <List disablePadding>{Lodash.map(newPosts, renderPost)}</List>
+          <List disablePadding>{Lodash.map(posts, renderPost)}</List>
         </Grid>
       </Grid>
       <Fab
@@ -210,13 +237,11 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
   );
 };
 
-
 BlogPosts.getInitialProps = wrapper.getInitialPageProps(
-  ({dispatch}) => async () => {
-    await dispatch(getPosts())
-  }
-)
-
-
+  ({ dispatch }) =>
+    async () => {
+      await dispatch(getPosts());
+    }
+);
 
 export default BlogPosts;
