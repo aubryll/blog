@@ -1,8 +1,8 @@
 import { Action, AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { ThunkAction } from "redux-thunk";
 import {createWrapper, HYDRATE} from 'next-redux-wrapper'
-import postsReducer from "./reducers/post/postsReducer";
-import postReducer from "./reducers/post/postReducer";
+import postsReducer from "./reducers/postsReducer";
+import postReducer from "./reducers/postReducer";
 
 
 const combinedReducer = combineReducers({

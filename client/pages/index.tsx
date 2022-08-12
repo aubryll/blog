@@ -22,8 +22,8 @@ import type { Form, Post } from "@/components/types";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { wrapper } from "redux/store";
-import { addPost, getPosts } from "redux/reducers/post/actions";
-import { PostState } from "redux/reducers/post/postsReducer";
+import { addPost, getPosts } from "redux/reducers/actions";
+import { PostState } from "redux/reducers/postsReducer";
 
 /**
  * Prop type for this component
@@ -38,7 +38,7 @@ type BlogPostsProps = {
  * @param name
  * @returns
  */
-const stringAvatar = (name: string) => {
+export const stringAvatar = (name: string) => {
   return {
     children: `${name.split(" ")[0][0]}`,
   };
@@ -187,7 +187,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
           name="body"
           control={control}
           rules={{
-            required: "Enter your email address",
+            required: "Enter your post",
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
