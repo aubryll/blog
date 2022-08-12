@@ -20,6 +20,7 @@ import Lodash from "lodash";
 import { FormDialog } from "@/components/dialog";
 import type { Form, Post } from "@/components/types";
 import Link from "next/link";
+import { get } from "@/api/index";
 
 /**
  * Prop type for this component
@@ -203,7 +204,7 @@ const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
 };
 
 export const getStaticProps = async () => {
-  const posts: Post[] = data;
+  const posts = await get('blog/0/20')
   return {
     props: {
       posts: posts,

@@ -20,7 +20,8 @@
             "@/components": ["components"],
             "@/components/*": ["components/*"],
             "@/spree-commerce/api": ["spree/api"],
-            "@/lib/*": ["lib/*"]
+            "@/lib/*": ["lib/*"],
+            "@/api/*": ["api/*"]
         }
     },
     "include": [
