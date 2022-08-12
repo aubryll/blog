@@ -2,10 +2,12 @@ import { Action, AnyAction, combineReducers, configureStore } from "@reduxjs/too
 import { ThunkAction } from "redux-thunk";
 import {createWrapper, HYDRATE} from 'next-redux-wrapper'
 import postsReducer from "./reducers/post/postsReducer";
+import postReducer from "./reducers/post/postReducer";
 
 
 const combinedReducer = combineReducers({
   posts: postsReducer,
+  post: postReducer
 });
 
 const reducer = (state: ReturnType<typeof combinedReducer>, action: AnyAction) => {

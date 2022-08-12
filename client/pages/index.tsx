@@ -56,7 +56,7 @@ const renderPost = (
   index: number
 ) => {
   return (
-    <Link key={index} href={`/post/${_id}`}>
+    <Link key={index} href={`/${_id}`}>
       <ListItem button alignItems="flex-start">
         <ListItemAvatar>
           <Avatar alt={author} {...stringAvatar(author)} />
@@ -211,7 +211,7 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
             <Typography gutterBottom variant="h1">
               Blog posts
             </Typography>
-            <Divider />
+            <Divider flexItem={true}/>
           </Stack>
         </Grid>
         <Grid item xs={12}>
