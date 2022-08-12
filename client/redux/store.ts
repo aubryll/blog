@@ -1,19 +1,26 @@
-import {
-  configureStore,
-} from "@reduxjs/toolkit";
+import { applyMiddleware, compose, configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
-import commentReducer from "./reducers/comment";
-import postReducer from "./reducers/post";
+import rootReducer from "./reducers/rootReducer";
 
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
+}
 
-const store =  configureStore({
+const middlewares = [thunk];
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const enhancers = composeEnhancers(applyMiddleware(...middlewares));
+
+const store = configureStore({
   reducer: {
-    commentReducer,
-    postReducer
+    rootReducer,
   },
-  middleware: [thunk]
+  middleware: [thunk],
+  enhancers: [enhancers],
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export default store;
+
