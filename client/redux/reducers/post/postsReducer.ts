@@ -1,17 +1,19 @@
 import type { Post } from "@/components/types";
 import { createReducer } from "@reduxjs/toolkit";
-import { getPosts } from "./actions";
+import { addPost, getPosts } from "./actions";
 
-type State = {
+export type PostState = {
   posts?: Post[];
   pending: boolean;
   error: boolean;
+  page: number;
 };
 
-const initialState: State = {
+const initialState: PostState = {
   posts: [],
   pending: false,
   error: false,
+  page: 0
 };
 
 const postReducer = createReducer(initialState, (builder) => {
@@ -27,6 +29,19 @@ const postReducer = createReducer(initialState, (builder) => {
       state.pending = false;
       state.error = false;
       state.posts = payload.data;
+      state.page = payload.page;
+    })
+    .addCase(addPost.pending, (state) => {
+      state.pending = true;
+    })
+    .addCase(addPost.rejected, (state) => {
+      state.pending = true;
+      state.error = true;
+    })
+    .addCase(addPost.fulfilled, (state, { payload }) => {
+      state.pending = false;
+      state.error = false;
+      state.posts = [payload.data,...(state.posts ?? [])];
     });
 });
 

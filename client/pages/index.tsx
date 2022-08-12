@@ -12,6 +12,7 @@ import {
   Stack,
   Fab,
   TextField,
+  Button,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { formatDistance } from "date-fns";
@@ -21,8 +22,8 @@ import type { Form, Post } from "@/components/types";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { wrapper } from "redux/store";
-import { getPosts } from "redux/reducers/post/actions";
-import {post} from "../api/index"
+import { addPost, getPosts } from "redux/reducers/post/actions";
+import { PostState } from "redux/reducers/post/postsReducer";
 
 /**
  * Prop type for this component
@@ -111,12 +112,11 @@ const renderPost = (
 const BlogPosts: NextPage<BlogPostsProps> = () => {
   const dispatch = useDispatch();
 
-  const { posts, isLoading, error } = useSelector((state: any) => state.posts);
+  const postState: PostState = useSelector((state: any) => state.posts);
+  const { posts, page, pending, error } = postState
+
   const [dialogFormOpen, setDialogFormOpen] = useState(false);
 
-  const createBlogPost = async (data: Post) => {
-    await post('blog/create',data)
-  };
   const forms = useForm<Form>({
     defaultValues: {
       title: "",
@@ -130,8 +130,8 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
 
   const createPost = async (data: Form) => {
     toggleDialogForm();
-    await createBlogPost(data);
-    dispatch(getPosts())
+    // @ts-ignore
+    dispatch(addPost(data));
   };
 
   return (
@@ -216,6 +216,10 @@ const BlogPosts: NextPage<BlogPostsProps> = () => {
         </Grid>
         <Grid item xs={12}>
           <List disablePadding>{Lodash.map(posts, renderPost)}</List>
+          <Stack direction={"row"} spacing={5} marginY={5}>
+          <Button variant="outlined" onClick={() => dispatch(getPosts({page: --page}))} disabled={page === 0}>Back</Button>
+          <Button variant="contained" onClick={() => dispatch(getPosts({page: ++page}))} disabled={posts?.length === 0}>Next</Button>
+          </Stack>
         </Grid>
       </Grid>
       <Fab

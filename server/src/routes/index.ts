@@ -34,7 +34,7 @@ router.post("/blog/create", (req: any, res: any) => {
 
 router.get("/comments/:postId", (req: any, res: any) => {
   const { postId } = req.params;
-  Blog.find({ _id: postId }, { comments: 1 })
+  Blog.find({ _id: postId })
     .populate("comments")
     .populate("comments.comments")
     .sort({ _id: -1 })
