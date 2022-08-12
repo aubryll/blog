@@ -36,7 +36,12 @@ router.get("/comments/:postId", (req: any, res: any) => {
   const { postId } = req.params;
   Blog.findById(postId)
     .populate("comments")
-    .populate("comments.comments")
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'comments'
+      }
+    })
     .sort({ _id: -1 })
     .exec((err, blogs) => {
       if (err) {

@@ -1,5 +1,5 @@
 import { get, post } from "@/api/index";
-import { Comment, Post } from "@/components/types";
+import { Comment, Post, SubComment } from "@/components/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 type getPostProps = {
@@ -36,4 +36,9 @@ export const getPost = createAsyncThunk(
 export const addComment = createAsyncThunk(
   "posts/getPost/addComment",
   async (comment: Comment) => await post("comments/create", comment)
+);
+
+export const addSubComment = createAsyncThunk(
+  "posts/getPost/comment/addComment",
+  async (comment: SubComment) => await post("comments/comment/create", comment)
 );
