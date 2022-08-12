@@ -10,6 +10,7 @@ import { Layout } from "@/components/layout";
 import { HeadMeta } from "@/components/head";
 import { wrapper } from "redux/store";
 
+
 type GetLayout = (page: ReactNode) => ReactNode;
 
 // eslint-disable-next-line @typescript-eslint/ban-types

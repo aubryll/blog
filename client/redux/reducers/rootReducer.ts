@@ -1,11 +1,11 @@
-import { combineReducers } from "redux"
+import { combineReducers } from "@reduxjs/toolkit"
 import postReducer from "./post/reducer"
 
-const rootReducer = () => {
+const rootReducer = () => 
     combineReducers({
         posts: postReducer,
     
     })
-}
+
 
 export default rootReducer

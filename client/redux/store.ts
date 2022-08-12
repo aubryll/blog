@@ -1,24 +1,29 @@
-import { Action, applyMiddleware, compose, configureStore } from "@reduxjs/toolkit";
-import thunk, { ThunkAction } from "redux-thunk";
-import rootReducer from "./reducers/rootReducer";
-import {createWrapper} from 'next-redux-wrapper'
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-  }
-}
+import { Action, AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
+import { ThunkAction } from "redux-thunk";
+import {createWrapper, HYDRATE} from 'next-redux-wrapper'
+import postReducer from "./reducers/post/reducer";
 
-const middlewares = [thunk];
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const enhancers = composeEnhancers(applyMiddleware(...middlewares));
 
-const makeStore = () => configureStore({
-  reducer: {
-    rootReducer,
-  },
-  middleware: [thunk],
-  enhancers: [enhancers],
+const combinedReducer = combineReducers({
+  posts: postReducer,
 });
+
+const reducer = (state: ReturnType<typeof combinedReducer>, action: AnyAction) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state,
+      ...action.payload,
+    };
+    return nextState;
+  } else {
+    return combinedReducer(state, action);
+  }
+};
+
+export const makeStore = () =>
+  configureStore({
+    reducer,
+  });
 
 type Store = ReturnType<typeof makeStore>;
 

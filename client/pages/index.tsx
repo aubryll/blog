@@ -21,6 +21,10 @@ import { FormDialog } from "@/components/dialog";
 import type { Form, Post } from "@/components/types";
 import Link from "next/link";
 import { get } from "@/api/index";
+import { useDispatch, useSelector } from "react-redux";
+import { wrapper } from "redux/store";
+import {loadPostsAsync} from '../redux/reducers/post/thunk'
+import { getPosts } from "redux/reducers/post/actions";
 
 /**
  * Prop type for this component
@@ -100,7 +104,10 @@ const renderPost = (
  * @param param0
  * @returns
  */
-const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
+const BlogPosts: NextPage<BlogPostsProps> = () => {
+  const dispatch = useDispatch()
+  const {posts, isLoading, error} = useSelector((state: any) => state.posts)
+
   const newPosts = Lodash.take(posts, 10);
   const [dialogFormOpen, setDialogFormOpen] = useState(false);
 
@@ -203,13 +210,13 @@ const BlogPosts: NextPage<BlogPostsProps> = ({ posts }) => {
   );
 };
 
-export const getStaticProps = async () => {
-  const posts = await get('blog/0/20')
-  return {
-    props: {
-      posts: posts,
-    },
-  };
-};
+
+BlogPosts.getInitialProps = wrapper.getInitialPageProps(
+  ({dispatch}) => async () => {
+    await dispatch(getPosts())
+  }
+)
+
+
 
 export default BlogPosts;

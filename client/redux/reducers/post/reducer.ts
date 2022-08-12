@@ -1,51 +1,33 @@
 import type { Post } from "@/components/types";
-import { ActionTypes } from "./actions";
+import { createReducer } from "@reduxjs/toolkit";
+import { getPosts } from "./actions";
 
 type State = {
   posts?: Post[];
-  isLoading: boolean;
-  error?: Error;
+  pending: boolean;
+  error: boolean;
 };
 
 const initialState: State = {
   posts: [],
-  isLoading: false,
+  pending: false,
+  error: false,
 };
 
-const postReducer = (
-  state = initialState,
-  { type, payload }: { type: ActionTypes; payload: any }
-) => {
-  switch (type) {
-    case ActionTypes.POSTS_LOAD_START: {
-      const updatedState: State = {
-        ...state,
-        isLoading: true,
-      };
-      return updatedState;
-    }
-
-    case ActionTypes.POSTS_LOAD_SUCCESS: {
-      const updatedState: State = {
-        ...state,
-        isLoading: false,
-        posts: payload,
-      };
-      return updatedState;
-    }
-
-    case ActionTypes.POST_LOAD_ERROR: {
-      const updatedState: State = {
-        ...state,
-        isLoading: false,
-        error: payload,
-      };
-    }
-
-    default: {
-      return state;
-    }
-  }
-};
+const postReducer = createReducer(initialState, (builder) => {
+  builder
+    .addCase(getPosts.pending, (state) => {
+      state.pending = true;
+    })
+    .addCase(getPosts.rejected, (state) => {
+      state.pending = true;
+      state.error = true;
+    })
+    .addCase(getPosts.fulfilled, (state, { payload }) => {
+      state.pending = false;
+      state.error = false;
+      state.posts = payload.data;
+    });
+});
 
 export default postReducer;
