@@ -8,6 +8,7 @@ import type { NextPage } from "next";
 import type { ReactNode } from "react";
 import { Layout } from "@/components/layout";
 import { HeadMeta } from "@/components/head";
+import { wrapper } from "redux/store";
 
 type GetLayout = (page: ReactNode) => ReactNode;
 
@@ -55,4 +56,4 @@ const App = ({
   );
 };
 
-export default App;
+export default wrapper.withRedux(App);
